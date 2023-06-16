@@ -10,7 +10,7 @@ api_url = "https://api.calorieninjas.com/v1/nutrition?query="
 api_key = "RyKDI8c52NHQaXlqtxVqyw==zmfaoffnPcGjV6sJ"
 
 def get_calories(food,quantity):
-    query = food + " " + str(quantity)
+    query = str(quantity)+" "+food
     response = requests.get(api_url +query ,headers={'X-Api-Key':api_key})
     if(response.status_code != 200):
         return "Error" + str(response.status_code) + response.text

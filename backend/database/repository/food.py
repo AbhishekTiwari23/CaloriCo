@@ -35,6 +35,11 @@ def create_new_food(user:User,food: FoodCreate, db: Session):
     db.refresh(new_food)
     return new_food
 
+
+def get_food_list(db: Session, user: User):
+    food_list = db.query(Food).filter(Food.owner_id == user.id).all()
+    return food_list
+
 # def get_user_food_by_username(username: str, db: Session):
 #     user = db.query(User).filter(User.username == username).first()
 #     if not user:

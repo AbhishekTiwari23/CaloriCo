@@ -19,6 +19,13 @@ def create_food(user_name: str, food: FoodCreate, db: Session = Depends(get_db),
     food = create_new_food(user, food, db)
     return food
 
+# get all food
+@food_router.get("/all", response_model=list[ShowFood])
+def get_all_food(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User not found")
+    return db.query(Food).filter(Food.owner_id == user.id).all()    
+
 # @food_router.put("/update/{user_id}/{food_id}", response_model=ShowFood)
 # def update_food(food_id: int, food: FoodCreate, db: Session = Depends(get_db)):
 #     food = db.query(Food).filter(Food.id == food_id).update(food.dict())
