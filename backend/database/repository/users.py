@@ -4,6 +4,7 @@ from database.models.users import User
 from schemas.users import UserCreate
 from fastapi import HTTPException, status
 from core.hashing import Hash
+from database.models.food import Food
 
 # Create a new user - Working
 def create_new_user(user: UserCreate, db: Session):
@@ -54,3 +55,13 @@ def get_user_by_id(id: int, db: Session):
     user = db.query(User).filter(User.id == id).first()
     return user
 
+# Check if a user achieved his daily calories goal
+def check_calories_goal(user: User, db: Session):
+    total_calories = 0
+    food_list = db.query(Food).filter(Food.owner_id == user.id).all()
+    for food in food_list:
+        total_calories += food.calories
+    if total_calories > user.expected_calories:
+        return f"You exceeded your daily calories goal by {total_calories - user.expected_calories} calories , your total calories for today is {total_calories} and your daily goal is {user.expected_calories}"
+    else:
+        return f"You did not exceed your daily calories goal by {user.expected_calories - total_calories} calories, your total calories for today is {total_calories} and your daily goal is {user.expected_calories}"
