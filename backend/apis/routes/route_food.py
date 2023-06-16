@@ -32,10 +32,19 @@ def delete_user_food(food_id: int, db: Session = Depends(get_db), user: User = D
     message = delete_food(user, food_id, db)
     return message
 
-
-# @food_router.put("/update/{user_id}/{food_id}", response_model=ShowFood)
-# def update_food(food_id: int, food: FoodCreate, db: Session = Depends(get_db)):
-#     food = db.query(Food).filter(Food.id == food_id).update(food.dict())
-#     db.commit()
-#     db.refresh(food)
-#     return food
+# update food - Working
+@food_router.put("/update/{food_id}", response_model=ShowFood)
+def update_food(food_id: int, food: FoodCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User not found")
+    existing_food = db.query(Food).filter(Food.id == food_id).first()
+    if not existing_food:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Food with id {food_id} not found")
+    if existing_food.owner_id != user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to update this food")
+    existing_food.name = food.name
+    existing_food.quantity = food.quantity
+    existing_food.calories = food.calories
+    db.commit()
+    db.refresh(existing_food)
+    return existing_food

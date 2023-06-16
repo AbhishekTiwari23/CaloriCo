@@ -6,7 +6,7 @@ class FoodCreate(BaseModel):
     name: str = Field(example="apple", description="Name of the food")
     date: date
     quantity: int = Field(example=1, description="Quantity of the food")
-    calories: Optional[str] = Field(example="95", description="Calories of the food")
+    calories: Optional[str] = Field(example="95", description="Calories of the food") 
 
     class Config:
         orm_mode = True
