@@ -1,0 +1,44 @@
+# File Srructure
+
+backend
+|
+|-Api
+|   |
+|   |- Routes
+|       |- route_admin.py
+|       |- route_food.py
+|       |-route_user.py
+|       |-route_userManager.py
+|       |-route_auth.py
+|
+|-Core
+|   |- calories.py
+|   |- config.py
+|   |-hashing.py
+|   |-permissions.py
+|   |-security.py
+|
+|-databse
+|   |
+|   |- Models
+|   |    |- Food.py
+|   |    |- User.py
+|   |
+|   |-Repository
+|   |    |- User.py
+|   |    |- Food.py
+|   |
+|   |- BaseClass.py
+|   |
+|   |- Sessions.py
+|
+|-Schemas
+|   |- Food.py
+|   |- User.py
+|   |- Token.py
+|
+|-Test
+|
+|-.env
+|
+|-Requirements.txt
