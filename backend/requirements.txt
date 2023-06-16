@@ -5,3 +5,10 @@ FastAPI
 #for database
 SQLAlchemy
 databases[sqlite]
+
+#for pydantic email validation
+pydantic[email]
+
+#for password hashing
+passlib[bcrypt]
+
