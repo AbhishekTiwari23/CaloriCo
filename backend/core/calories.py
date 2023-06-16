@@ -1,4 +1,4 @@
-import requests 
+import requests
 import os
 from dotenv import load_dotenv
 from pathlib import Path
@@ -13,7 +13,7 @@ def get_calories(food,quantity):
     query = food + " " + str(quantity)
     response = requests.get(api_url +query ,headers={'X-Api-Key':api_key})
     if(response.status_code != 200):
-        return "Error" + response.status_code + response.text
+        return "Error" + str(response.status_code) + response.text
     return response.text
 
 

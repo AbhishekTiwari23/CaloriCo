@@ -10,10 +10,11 @@ from database.models.users import User
 
 food_router = APIRouter()
 
-@food_router.post("/{user_id}/new_food", response_model=ShowFood)
-def create_food(user_id: int, food: FoodCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+# Route to create a new food - Working
+@food_router.post("/{user_name}/new_food", response_model=ShowFood)
+def create_food(user_name: str, food: FoodCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with id {user_id} not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with user name {user_name} not found")
 
     food = create_new_food(user, food, db)
     return food

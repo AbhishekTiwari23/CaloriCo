@@ -2,7 +2,7 @@ from datetime import datetime,timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from schemas.users import UserCreate as User
-from database.repository.users import get_user_by_username
+from database.repository.users import get_user_by_email
 from fastapi import HTTPException, Header, Depends
 from core.config import settings
 from core.hashing import Hash
@@ -30,18 +30,18 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 def get_current_user(auth_token: Optional[str] = Header(None), db: Session = Depends(get_db)) -> User:
     if auth_token is None:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    
+
     try:
         payload = jwt.decode(auth_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        username = payload.get("sub")
-        
-        if not username:
-            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
-        
-        user = get_user_by_username(username, db)
-        
+        email = payload.get("sub")
+
+        if not email:
+            raise HTTPException(status_code=401, detail="Invalid authentication credentials A")
+
+        user = get_user_by_email(email, db)
+
         if user is None:
-            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+            raise HTTPException(status_code=401, detail=f"Invalid authentication credentials B, {email} {payload}")
         
         return user
     except JWTError:
