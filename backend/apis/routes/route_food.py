@@ -20,10 +20,13 @@ def create_food(user_name: str, food: FoodCreate, db: Session = Depends(get_db),
     return food
 
 # get all food - Working
-@food_router.get("/all", response_model=list[ShowFood])
+@food_router.get("/{userName}/all", response_model=list[ShowFood])
 def get_all_food(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    if not user:
+    existing_user = db.query(User).filter(User.username == user.username).first()
+    if not existing_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User not found")
+    if existing_user.id != user.id or user.role not in ["Role.admin", "Role.userManager"] :
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to update this food")
     return db.query(Food).filter(Food.owner_id == user.id).all()
 
 # delete food - Working
@@ -34,13 +37,17 @@ def delete_user_food(food_id: int, db: Session = Depends(get_db), user: User = D
 
 # update food - Working
 @food_router.put("/update/{food_id}", response_model=ShowFood)
-def update_food(food_id: int, food: FoodCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+def update_food(
+    food_id: int,
+    food: FoodCreate,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User not found")
     existing_food = db.query(Food).filter(Food.id == food_id).first()
     if not existing_food:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Food with id {food_id} not found")
-    if existing_food.owner_id != user.id:
+    if existing_food.owner_id != user.id or user.role not in ["Role.admin", "Role.userManager"] :
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to update this food")
     existing_food.name = food.name
     existing_food.quantity = food.quantity

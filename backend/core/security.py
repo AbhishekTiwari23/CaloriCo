@@ -3,7 +3,7 @@ from typing import Optional
 from jose import JWTError, jwt
 from schemas.users import UserCreate as User
 from database.repository.users import get_user_by_email
-from fastapi import HTTPException, Header, Depends
+from fastapi import HTTPException, Header, Depends, Query
 from core.config import settings
 from core.hashing import Hash
 from database.sessions import get_db
@@ -27,7 +27,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
-def get_current_user(auth_token: Optional[str] = Header(None), db: Session = Depends(get_db)) -> User:
+def get_current_user(auth_token: Optional[str] = Query(None), db: Session = Depends(get_db)) -> User:
     if auth_token is None:
         raise HTTPException(status_code=401, detail="Not authenticated")
 

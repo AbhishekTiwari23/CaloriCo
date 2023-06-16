@@ -44,8 +44,8 @@ def delete_food(user:User,food_id:int, db: Session):
     food = db.query(Food).filter(Food.id == food_id).first()
     if not food:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Food with id {food_id} not found")
-    if food.owner_id != user.id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to delete this food")
+    if food.owner_id != user.id or user.role not in ["Role.admin", "Role.userManager"] :
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to update this food")
     db.query(Food).filter(Food.id == food_id).delete()
     db.commit()
     return {"message": "Food deleted successfully"}
