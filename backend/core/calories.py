@@ -7,7 +7,7 @@ env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
 api_url = "https://api.calorieninjas.com/v1/nutrition?query="
-api_key = os.getenv("CALORIE_API_KEY")
+api_key = "RyKDI8c52NHQaXlqtxVqyw==zmfaoffnPcGjV6sJ"
 
 def get_calories(food,quantity):
     query = food + " " + str(quantity)

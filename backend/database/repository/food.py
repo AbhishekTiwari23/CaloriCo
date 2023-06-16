@@ -18,7 +18,7 @@ def create_new_food(user:User,food: FoodCreate, db: Session):
             data = json.loads(api_response)
             add_calories = data['items'][0]['calories']
         except:
-            raise HTTPException(status_code=403,detail="Invalid food name")
+            raise HTTPException(status_code=403,detail=f"Invalid food name,")
     if(food.quantity <=0 ):
         raise HTTPException(status_code=403,detail="Quantity must be a positive integer")
     new_food = Food(
