@@ -49,4 +49,8 @@ def delete_user_by_email(email: str, db: Session):
     db.commit()
     return 1
 
+# Get a user by id
+def get_user_by_id(id: int, db: Session):
+    user = db.query(User).filter(User.id == id).first()
+    return user
 

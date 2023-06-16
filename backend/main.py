@@ -3,12 +3,14 @@ from core.config import settings
 from database.sessions import engine, SessionLocal
 from database.baseClass import Base
 
-from apis.routes import route_users
+from apis.routes import route_users, route_food, route_login
 
 
 
 def include_router(app):
     app.include_router(route_users.user_router, tags=["Users"], prefix="/users")
+    app.include_router(route_food.food_router, tags=["Food"], prefix="/food")
+    app.include_router(route_login.login_router, tags=["Login"], prefix="/login")   
 
 def configure_database(app):
     Base.metadata.create_all(bind=engine)

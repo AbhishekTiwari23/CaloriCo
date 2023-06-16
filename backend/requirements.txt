@@ -12,3 +12,11 @@ pydantic[email]
 #for password hashing
 passlib[bcrypt]
 
+# For Dot Env
+python-dotenv
+
+# For Request Validation
+requests
+
+# For JWT
+python-jose[cryptography]

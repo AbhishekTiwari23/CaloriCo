@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Date, Integer, String, Boolean, Enum
+from sqlalchemy.orm import relationship
 from database.baseClass import Base
 from schemas.users import Role
 
@@ -14,5 +15,7 @@ class User(Base):
     join_date = Column(Date)
     role = Column(Enum(Role), default="user")
     expected_calories = Column(Integer)
+
+    food = relationship("Food", back_populates="owner")
 
 
