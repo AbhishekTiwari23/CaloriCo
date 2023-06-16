@@ -1,4 +1,4 @@
-from database.repository.users import create_new_user, get_user_by_email,  get_user_by_username, delete_user_by_email,check_calories_goal
+from database.repository.users import get_user_by_email,  get_user_by_username, delete_user_by_email,check_calories_goal
 from database.sessions import get_db
 from database.models.users import User
 
@@ -8,13 +8,6 @@ from sqlalchemy.orm import Session
 from schemas.users import UserCreate, ShowUser,Role
 
 user_router = APIRouter()
-
-
-# Route to create a new user - Working
-@user_router.post("/",response_model=UserCreate)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    user = create_new_user(user, db)
-    return user
 
 
 # Route to get User By Username - Working

@@ -7,8 +7,11 @@ from core.config import settings
 from database.sessions import get_db
 from database.repository.users import get_user_by_username
 from schemas.token import Token
+from schemas.users import UserCreate
 from core.hashing import Hash
 from core.security import create_access_token
+
+from database.repository.users import create_new_user
 
 
 login_router = APIRouter()
@@ -36,3 +39,8 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),db: 
     )
     return {"access_token": access_token, "token_type": "bearer",}
 
+# Create new user
+@login_router.post("/SighUp", response_model=UserCreate)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    user = create_new_user(user, db)
+    return user
