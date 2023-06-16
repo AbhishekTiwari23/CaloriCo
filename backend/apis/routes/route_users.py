@@ -1,10 +1,11 @@
 from database.repository.users import create_new_user, get_user_by_email,  get_user_by_username, delete_user_by_email
 from database.sessions import get_db
+from database.models.users import User
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from sqlalchemy.orm import Session
-from schemas.users import UserCreate, ShowUser
+from schemas.users import UserCreate, ShowUser,Role
 
 user_router = APIRouter()
 
@@ -59,3 +60,9 @@ def update_user(email: str, user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(existing_user)
     return existing_user
+
+# Get all users - Working
+@user_router.get("/{role}/all", response_model=list[ShowUser])
+def get_all_users(role: str, db: Session = Depends(get_db)):
+    users = db.query(User).filter(User.role == role).all()
+    return users
