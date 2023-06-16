@@ -40,9 +40,12 @@ def get_food_list(db: Session, user: User):
     food_list = db.query(Food).filter(Food.owner_id == user.id).all()
     return food_list
 
-# def get_user_food_by_username(username: str, db: Session):
-#     user = db.query(User).filter(User.username == username).first()
-#     if not user:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with username {username} not found")
-#     user_food = db.query(Food).filter(Food.owner_id == user.id).all()
-#     return user_food
+def delete_food(user:User,food_id:int, db: Session):
+    food = db.query(Food).filter(Food.id == food_id).first()
+    if not food:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Food with id {food_id} not found")
+    if food.owner_id != user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to delete this food")
+    db.query(Food).filter(Food.id == food_id).delete()
+    db.commit()
+    return {"message": "Food deleted successfully"}
