@@ -49,3 +49,4 @@ def delete_user_by_email(email: str, db: Session):
     db.commit()
     return 1
 
+

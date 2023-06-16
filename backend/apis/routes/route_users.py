@@ -40,3 +40,22 @@ def delete_user_email(email: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with email {email} not found")
     delete_user_by_email(email, db)
     return {"detail": "User deleted successfully"}
+
+# Update a user by email - Working
+@user_router.put("/update/{email}", response_model=ShowUser)
+def update_user(email: str, user: UserCreate, db: Session = Depends(get_db)):
+    existing_user = get_user_by_email(email, db)
+    if not existing_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with email {email} not found")
+
+    # Update the user's attributes
+    existing_user.first_name = user.first_name
+    existing_user.last_name = user.last_name
+    existing_user.username = user.username
+    existing_user.email = user.email
+    existing_user.role = user.role
+    existing_user.expected_calories = user.expected_calories
+
+    db.commit()
+    db.refresh(existing_user)
+    return existing_user
