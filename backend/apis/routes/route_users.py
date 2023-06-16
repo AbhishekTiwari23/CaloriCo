@@ -1,4 +1,4 @@
-from database.repository.users import create_new_user, get_user_by_email
+from database.repository.users import create_new_user, get_user_by_email, get_user_by_username
 from database.sessions import get_db
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -15,9 +15,18 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user = create_new_user(user, db)
     return user
 
+
+# Route to get User By Username - Working
+@user_router.get("Username/{username}", response_model=ShowUser)
+def get_user_username(username: str, db: Session = Depends(get_db)):
+    user = get_user_by_username(username, db)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with username {username} not found")
+    return user
+
 # Route to get User By Email - Working
-@user_router.get("/{email}", response_model=ShowUser)
-def get_user(email: str, db: Session = Depends(get_db)):
+@user_router.get("Email/{email}", response_model=ShowUser)
+def get_user_email(email: str, db: Session = Depends(get_db)):
     user = get_user_by_email(email, db)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with email {email} not found")
