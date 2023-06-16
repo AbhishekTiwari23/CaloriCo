@@ -1,4 +1,4 @@
-from database.repository.users import create_new_user, get_user_by_email, get_user_by_username
+from database.repository.users import create_new_user, get_user_by_email,  get_user_by_username, delete_user_by_email
 from database.sessions import get_db
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -31,3 +31,12 @@ def get_user_email(email: str, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with email {email} not found")
     return user
+
+# Route to delete a user by email - Working
+@user_router.delete("Email/{email}")
+def delete_user_email(email: str, db: Session = Depends(get_db)):
+    user = get_user_by_email(email, db)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with email {email} not found")
+    delete_user_by_email(email, db)
+    return {"detail": "User deleted successfully"}

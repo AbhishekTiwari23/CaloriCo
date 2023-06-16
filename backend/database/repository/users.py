@@ -40,3 +40,12 @@ def get_user_by_username(username: str, db: Session):
     user = db.query(User).filter(User.username == username).first()
     return user
 
+#  Delete a user by email
+def delete_user_by_email(email: str, db: Session):
+    current_user = db.query(User).filter(User.email == email)
+    if not current_user.first():
+        return 0
+    current_user.delete(synchronize_session=False)
+    db.commit()
+    return 1
+
