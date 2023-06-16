@@ -1,0 +1,7 @@
+# Api Section
+Uvicorn
+FastAPI
+
+#for database
+SQLAlchemy
+databases[sqlite]
