@@ -23,9 +23,9 @@ def create_new_food(user:User,food: FoodCreate, db: Session):
     new_food = Food(
         name=food.name,
         date=add_date,
-        time = food.time or datetime.utcnow().strftime("%H:%M:%S"),
+        time = food.time,
         quantity=food.quantity or 1,
-        calories=int(add_calories),
+        calories=add_calories,
         owner_id=user.id
     )
 
@@ -43,8 +43,8 @@ def delete_food(user:User,food_id:int, db: Session):
     food = db.query(Food).filter(Food.id == food_id).first()
     if not food:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Food with id {food_id} not found")
-    if food.owner_id != user.id or user.role not in ["Role.admin", "Role.userManager"] :
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to update this food")
-    db.query(Food).filter(Food.id == food_id).delete()
-    db.commit()
-    return {"message": "Food deleted successfully"}
+    if food.owner_id == user.id or str(user.role) in ["Role.admin", "Role.userManager"] :
+        db.query(Food).filter(Food.id == food_id).delete()
+        db.commit()
+        return {"message": "Food deleted successfully"}
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to update this food")

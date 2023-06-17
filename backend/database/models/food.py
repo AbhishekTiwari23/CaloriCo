@@ -9,7 +9,7 @@ class Food(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(50), nullable=False)
     date = Column(Date, default=datetime.now().date())
-    time = Column(Time, default=datetime.now().time())
+    time = Column(String)
     quantity = Column(Integer, default=1)
     calories = Column(Integer)
     owner_id = Column(Integer, ForeignKey("users.id"))
