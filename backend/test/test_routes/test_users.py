@@ -61,7 +61,7 @@ def test_create_user_duplicate_username(client):
     assert response.json()["detail"] == "User with email test@email.com or username testuser already exists"
 
 
-# test for login
+# test for login with correct credentials
 def test_login(client):
     # Arrange
     user_data = {
@@ -83,4 +83,26 @@ def test_login(client):
     assert response.status_code == 200
     assert response.json()["access_token"] != None
     assert response.json()["token_type"] == "bearer"
+
+# test for login with incorrect credentials
+def test_login_incorrect_credentials(client):
+    # Arrange
+    user_data = {
+         "first_name": "John",
+        "last_name": "Doe",
+        "username": "testuser",
+        "email": "test@email.com",
+        "password": "testing",
+        "join_date": "2021-01-01",
+        "role": "user",
+        "expected_calories": 2000
+    }
+    response_existing_user = client.post("/auth/SighUp", json=user_data)  # Create an existing user
+
+    # Act
+    response = client.post("/auth/token", data={"username": "testur", "password": "testing123"})
+
+    # Assert
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Incorrect username or password"
     
