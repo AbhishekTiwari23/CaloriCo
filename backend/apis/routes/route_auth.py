@@ -12,7 +12,8 @@ from core.hashing import Hash
 from core.security import create_access_token
 
 from database.repository.users import create_new_user
-
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 
 login_router = APIRouter()
 
@@ -23,7 +24,8 @@ def authenticate_user(username: str, password: str,db: Session):
         return False
     if not Hash.verify( password,user.password) :
         return False
-    return user
+    json_compatabile_user = jsonable_encoder(user)
+    return JSONResponse(content=json_compatabile_user)
 
 @login_router.post("/token", response_model=Token)
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),db: Session= Depends(get_db)):
@@ -43,4 +45,5 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),db: 
 @login_router.post("/SighUp", response_model=UserCreate)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user = create_new_user(user, db)
-    return user
+    json_compatabile_user = jsonable_encoder(user)
+    return JSONResponse(content=json_compatabile_user)
