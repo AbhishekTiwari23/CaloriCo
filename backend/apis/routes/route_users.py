@@ -1,12 +1,13 @@
 from database.repository.users import get_user_by_email,  get_user_by_username, delete_user_by_email,check_calories_goal
 from database.sessions import get_db
 from database.models.users import User
-
+from pydantic import Field
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi_pagination import Page,paginate
 
 from sqlalchemy.orm import Session
-from schemas.users import UserCreate, ShowUser,Role
+from schemas.users import UserCreate, ShowUser
 from core.security import get_current_user
 
 user_router = APIRouter()
@@ -81,15 +82,18 @@ def update_user(
     return existing_user
 
 # Get all users - Working
-@user_router.get("/{role}/all", response_model=list[ShowUser])
+page = Page.with_custom_options(
+    size=Field(100, ge=1, le=500),
+    )
+@user_router.get("/{role}/all", response_model=page[ShowUser])
 def get_all_users(
     role: str,
-    current_user: User = Depends(get_current_user),
+    # current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)):
-    if current_user.role in ["Role.admin", "Role.userManager"]:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"User with username {current_user.username} is not authorized to access this resource {current_user.role}")
+    # if current_user.role not in ["Role.admin", "Role.userManager"]:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"User with username {current_user.username} is not authorized to access this resource {current_user.role}")
     users = db.query(User).filter(User.role == role).all()
-    return users
+    return paginate(users)
 
 #  Check calories - Working
 @user_router.get("/target_calories/{username}", response_model=str)

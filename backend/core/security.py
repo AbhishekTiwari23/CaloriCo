@@ -2,7 +2,7 @@ from datetime import datetime,timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from schemas.users import UserCreate as User
-from database.repository.users import get_user_by_email
+from database.repository.users import get_user_by_email, get_user_by_username
 from fastapi import HTTPException, Header, Depends, Query
 from core.config import settings
 from core.hashing import Hash

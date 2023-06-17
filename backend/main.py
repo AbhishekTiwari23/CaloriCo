@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 from core.config import settings
 from database.sessions import engine, SessionLocal
 from database.baseClass import Base
@@ -26,6 +27,6 @@ def start_application():
     app = FastAPI(title=settings.PROJECT_NAME,version=settings.PROJECT_VERSION)
     include_router(app)
     configure_database(app)
-    return app
+    return add_pagination(app)
 
 app = start_application()
