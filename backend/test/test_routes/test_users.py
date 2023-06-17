@@ -105,4 +105,13 @@ def test_login_incorrect_credentials(client):
     # Assert
     assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect username or password"
-    
+
+
+# test for login with non existing user
+def test_login_non_existing_user(client):
+    # Act
+    response = client.post("/auth/token", data={"username": "testur", "password": "testing123"})
+
+    # Assert
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Incorrect username or password"

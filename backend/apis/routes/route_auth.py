@@ -19,7 +19,6 @@ login_router = APIRouter()
 
 def authenticate_user(username: str, password: str,db: Session):
     user = get_user_by_username(username=username,db=db)
-    print(user)
     if not user:
         return False
     if not Hash.verify( password,user.password) :
