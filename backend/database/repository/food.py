@@ -10,7 +10,6 @@ from fastapi import HTTPException, status
 def create_new_food(user:User,food: FoodCreate, db: Session):
 
     add_date = food.date or datetime.utcnow().date()
-    # add_time = food.time or datetime.utcnow().strftime("%H:%M:%S")
     add_calories = food.calories
     if not food.calories:
         try:
@@ -24,7 +23,7 @@ def create_new_food(user:User,food: FoodCreate, db: Session):
     new_food = Food(
         name=food.name,
         date=add_date,
-        # time = add_time,
+        time = food.time or datetime.utcnow().strftime("%H:%M:%S"),
         quantity=food.quantity or 1,
         calories=add_calories,
         owner_id=user.id
