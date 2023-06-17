@@ -25,7 +25,7 @@ def create_new_food(user:User,food: FoodCreate, db: Session):
         date=add_date,
         time = food.time or datetime.utcnow().strftime("%H:%M:%S"),
         quantity=food.quantity or 1,
-        calories=add_calories,
+        calories=int(add_calories),
         owner_id=user.id
     )
 

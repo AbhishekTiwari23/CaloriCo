@@ -24,8 +24,7 @@ def authenticate_user(username: str, password: str,db: Session):
         return False
     if not Hash.verify( password,user.password) :
         return False
-    json_compatabile_user = jsonable_encoder(user)
-    return JSONResponse(content=json_compatabile_user)
+    return user
 
 @login_router.post("/token", response_model=Token)
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),db: Session= Depends(get_db)):
