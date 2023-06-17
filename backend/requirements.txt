@@ -24,3 +24,8 @@ python-jose[cryptography]
 # Pagination support
 fastapi-pagination
 
+# for Testing
+pytest
+httpx
+
+
