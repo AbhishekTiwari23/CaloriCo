@@ -6,8 +6,9 @@ from database.sessions import get_db
 from schemas.food import FoodCreate, ShowFood
 from database.repository.food import create_new_food,delete_food
 from database.models.users import User
-
-
+from database.repository.users import get_user_by_username
+from fastapi_pagination import Page, paginate
+from pydantic import Field
 food_router = APIRouter()
 
 # Route to create a new food - Working
@@ -20,14 +21,23 @@ def create_food(user_name: str, food: FoodCreate, db: Session = Depends(get_db),
     return food
 
 # get all food - Working
-@food_router.get("/{userName}/all", response_model=list[ShowFood])
-def get_all_food(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    existing_user = db.query(User).filter(User.username == user.username).first()
+page = Page.with_custom_options(
+    size=Field(100,ge=1,le=100),
+
+)
+@food_router.get("/{userName}/all", response_model=page[ShowFood])
+def get_all_food(
+    userName: str,
+    db: Session = Depends(get_db),
+    # user: User = Depends(get_current_user)
+    ):
+    existing_user =get_user_by_username(userName, db)
     if not existing_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User not found")
-    if existing_user.id != user.id or user.role not in ["Role.admin", "Role.userManager"] :
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to update this food")
-    return db.query(Food).filter(Food.owner_id == user.id).all()
+    # if existing_user.id != user.id or user.role not in ["Role.admin", "Role.userManager"] :
+    #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to update this food")
+    query = db.query(Food).filter(Food.owner_id == existing_user.id).all()
+    return paginate(query)
 
 # delete food - Working
 @food_router.delete("{/delete/{food_id}", response_model=dict)
