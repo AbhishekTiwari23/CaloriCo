@@ -190,4 +190,70 @@ def test_update_food_pos(client):
     assert response.json()["quantity"] == 2
     assert response.json()["calories"] == 300
 
+#  test to get all food entries for a user
+def test_get_all_food_entries_pos(client):
+    # Arrange
+    user_data = {
+        "first_name": "John",
+        "last_name": "Doe",
+        "username": "testuser",
+        "email": "testuser@nofoobar.com",
+        "password": "testing",
+        "join_date": "2021-01-01",
+        "role": "admin",
+        "expected_calories": 2000
+    }
+
+    create_user_response = client.post("/auth/SighUp", json=user_data)
+    assert create_user_response.status_code == 200
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    assert auth_user_response.status_code == 200
+    access_token = auth_user_response.json()["access_token"]
+
+    food_data1 = {
+        "name": "apple",
+        "date": "2023-06-18",
+        "time": "07:55:13",
+        "quantity": 1,
+        "calories": "96"
+    }
+    food_entry_response1 = client.post(
+        f"/food/testuser/new_food?auth_token={access_token}",
+        json=food_data1,
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+    food_data2 = {
+    "name": "banana",
+    "date": "2023-06-18",
+    "time": "07:55:13",
+    "quantity": 1,
+    "calories": "96"
+}
+    food_entry_response2 = client.post(
+        f"/food/testuser/new_food?auth_token={access_token}",
+        json=food_data2,
+        headers={"Authorization": f"Bearer {access_token}"}
+)
+
+    food_data3 = {
+        "name": "orange",
+        "date": "2023-06-18",
+        "time": "07:55:13",
+        "quantity": 1,
+        "calories": "96"
+    }
+    food_entry_response3 = client.post(
+        f"/food/testuser/new_food?auth_token={access_token}",
+        json=food_data3,
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    # Act
+    response = client.get("/food/{userName}/all?user_name=testuser&auth_token="+access_token)
+
+    # Assert
+    assert response.status_code == 200
+    assert len(response.json()["items"]) == 3
+
+
 

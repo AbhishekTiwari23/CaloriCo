@@ -25,7 +25,7 @@ class FoodCreate(BaseModel):
 class ShowFood(BaseModel):
     name: str = Field(description="Name of the food")
     date: date
-    time : time
+    time : str = Field(description="Time of the food")
     quantity: int = Field(description="Quantity of the food")
     calories: Optional[str] = Field(description="Calories of the food")
     owner_id: int = Field(description="ID of the food owner")
