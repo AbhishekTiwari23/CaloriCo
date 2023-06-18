@@ -87,19 +87,21 @@ def update_user(
         return JSONResponse(content=json_compatabile_user)
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"User with username {current_user.username} is not authorized to access this resource {current_user.role}")
 
-
 # Get all users - Working
 page = Page.with_custom_options(
-    size=Field(100, ge=1, le=500),
-    )
+    size=Field(100,ge=1,le=100),
+
+)
 @user_router.get("/{role}/all", response_model=page[ShowUser])
 def get_all_users(
     role: str,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)):
+    db: Session = Depends(get_db)
+):
     if str(current_user.role) in ["Role.admin", "Role.userManager"]:
         users = db.query(User).filter(User.role == role).all()
-        json_compatabile_users = jsonable_encoder(users)
+        paginated_users = paginate(users)
+        json_compatabile_users = jsonable_encoder(paginated_users.items)
         return JSONResponse(content=json_compatabile_users)
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"User with username {current_user.username} is not authorized to access this resource {current_user.role}")
 

@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi import FastAPI
 from core.config import settings
+from fastapi_pagination import add_pagination
 from database.baseClass import Base
 from database.sessions import get_db
 
@@ -20,7 +21,7 @@ def include_router(app):
 def start_application():
     app = FastAPI(title=settings.PROJECT_NAME,version=settings.PROJECT_VERSION)
     include_router(app)
-    return app
+    return add_pagination(app)
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
