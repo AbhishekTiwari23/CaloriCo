@@ -11,6 +11,7 @@ from fastapi_pagination import Page, paginate
 from pydantic import Field
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+from database.repository.users import check_calories_goal
 food_router = APIRouter()
 
 # Route to create a new food - Working
@@ -24,6 +25,9 @@ def create_food(
     if not existing_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with user name {user_name} not found")
     if existing_user.id != user.id or str(user.role) in ["Role.admin", "Role.userManager"] :
+        expected_calories = check_calories_goal(user, db)
+        if expected_calories > user.expected_calories:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Expected calories {expected_calories} is greater than user's calories goal {user.expected_calories} by {expected_calories - user.expected_calories}")
         food = create_new_food(user, food, db)
         json_compatabile_food = jsonable_encoder(food)
         return JSONResponse(content=json_compatabile_food)

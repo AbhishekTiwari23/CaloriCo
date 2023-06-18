@@ -116,7 +116,12 @@ def check_calories(
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with username {username} not found")
     if str(current_user.role) in ["Role.admin", "Role.userManager"] or (current_user.username == username):
-        message = check_calories_goal(user, db)
+        total_calories = check_calories_goal(user, db)
+        message = ""
+        if total_calories > user.expected_calories:
+            message = f"You exceeded your daily calories goal by {total_calories - user.expected_calories} calories , your total calories for today is {total_calories} and your daily goal is {user.expected_calories}"
+        else:
+            message = f"You did not exceed your daily calories goal by {user.expected_calories - total_calories} calories, your total calories for today is {total_calories} and your daily goal is {user.expected_calories}"
         json_compatabile_message = jsonable_encoder({"detail": message})
         return JSONResponse(content=json_compatabile_message)
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"User with username {current_user.username} is not authorized to access this resource {current_user.role}")
