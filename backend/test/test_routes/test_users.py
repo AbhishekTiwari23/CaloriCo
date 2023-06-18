@@ -139,6 +139,47 @@ def test_delete_user_with_invalid_token(client):
     assert response.status_code == 404
     assert response.json()["detail"] == "User with email testur@nofoobar.com not found"
 
+#  test to update a user by email with invalid email
+def test_update_user_by_email_invalid(client):
+    # Arrange
+    user_data = {
+        "first_name": "John",
+        "last_name": "Doe",
+        "username": "testuser",
+        "email": "testuser@nofoobar.com",
+        "password": "testing",
+        "join_date": "2021-01-01",
+        "role": "user",
+        "expected_calories": 2000
+
+    }
+    crate_user_response = client.post("/auth/SighUp", json=user_data)
+    assert crate_user_response.status_code == 200
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    assert auth_user_response.status_code == 200
+    access_token = auth_user_response.json()["access_token"]
+
+    updated_user_data = {
+        "first_name": "Updated John",
+        "last_name": "Updated Doe",
+        "username": "updated_testuser",
+        "email": "updated_testuser@nofoobar.com",
+        "password": "updated_testing",
+        "join_date": "2021-01-01",
+        "role": "admin",
+        "expected_calories": 2500
+    }
+    # Act
+    response = client.put(
+        f"/users/update/testuser@nofbar.com?auth_token={access_token}",
+        json=updated_user_data,
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    # Assert
+    assert response.status_code == 404
+    assert response.json()["detail"] == "User with email testuser@nofbar.com not found"
+
 #  test to update a user by email
 def test_update_user_by_email(client):
     # Arrange
