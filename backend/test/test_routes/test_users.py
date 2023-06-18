@@ -1,3 +1,5 @@
+from database.repository.users import check_calories_goal
+
 # test to get user by username
 def test_get_user_by_username(client):
 
@@ -322,6 +324,35 @@ def test_get_all_users_neg(client):
     # Act
     assert auth_user_response.status_code == 401
     assert auth_user_response.json()["detail"] == "Incorrect username or password"
+
+# test to check calories
+def test_check_calories(client):
+    # Arrange
+    user_data = {
+        "first_name": "John",
+        "last_name": "Doe",
+        "username": "testuser",
+        "email": "testuser@nofoobar.com",
+        "password": "testing",
+        "join_date": "2021-01-01",
+        "role": "user",
+        "expected_calories": 2000
+
+    }
+    crate_user_response = client.post("/auth/SighUp", json=user_data)
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    access_token = auth_user_response.json()["access_token"]
+
+    # Act
+    response = client.get(f"/users/target_calories/testuser?auth_token={access_token}")
+    # Assert
+    assert response.status_code == 200
+    assert str(user_data["expected_calories"]) in response.json()["detail"]
+    #  one check is also possible - enter food, now I have both so I can match details
+
+
+
+
 
 
 
