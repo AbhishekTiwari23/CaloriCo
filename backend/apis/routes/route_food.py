@@ -55,7 +55,7 @@ def get_all_food(
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to update this food")
 
 # delete food - Working
-@food_router.delete("{/delete/{food_id}", response_model=dict)
+@food_router.delete("/delete/{food_id}", response_model=dict)
 def delete_user_food(food_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     message = delete_food(user, food_id, db)
     json_compatabile_message = jsonable_encoder(message)
