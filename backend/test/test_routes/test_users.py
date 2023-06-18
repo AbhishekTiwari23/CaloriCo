@@ -117,6 +117,28 @@ def test_delete_user(client):
     assert response.status_code == 200
     assert response.json()["detail"] == "User deleted successfully"
 
+# test to delete a user with invalid token
+def test_delete_user_with_invalid_token(client):
+    # Arrange
+    user_data = {
+        "first_name": "John",
+        "last_name": "Doe",
+        "username": "testuser",
+        "email": "testuser@nofoobar.com",
+        "password": "testing",
+        "join_date": "2021-01-01",
+        "role": "user",
+        "expected_calories": 2000
+
+    }
+    crate_user_response = client.post("/auth/SighUp", json=user_data)
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+
+    response = client.delete("/usersEmail/testur@nofoobar.com?auth_token=" + auth_user_response.json()["access_token"])
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "User with email testur@nofoobar.com not found"
+
 
 # test to get all users
 def test_get_all_users(client):
