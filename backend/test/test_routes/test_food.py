@@ -20,21 +20,24 @@ def test_create_new_food(client):
     food_data = {
         "name": "apple",
         "date": "2023-06-18",
-        "time": "1900-01-01 07:55:13",
+        "time": "07:55:13",
         "quantity": 1,
         "calories": "95"
     }
 
     # Act
     access_token = auth_user_response.json()["access_token"]
-    headers = {"Authorization": f"Bearer {access_token}"}
-    response = client.post("/food/testuser/new_food?auth_token="+access_token, json=food_data, headers=headers)
+    response = client.post(
+        f"/food/testuser/new_food?auth_token={access_token}",
+        json=food_data,
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
 
     # Assert
     assert response.status_code == 200
     assert response.json()["name"] == "apple"
     assert response.json()["date"] == "2023-06-18"
-    assert response.json()["time"] == "07:55:13"
+    assert response.json()["time"] == "1900-01-01 07:55:13"
     assert response.json()["quantity"] == 1
     assert response.json()["calories"] == 95
 
@@ -55,4 +58,3 @@ def test_get_all_food(client):
     crate_user_response = client.post("/auth/SighUp", json=user_data)
     assert crate_user_response.status_code == 200
     auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
-
