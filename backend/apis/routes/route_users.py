@@ -3,7 +3,7 @@ from database.sessions import get_db
 from database.models.users import User
 from pydantic import Field
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status,Query
 from fastapi_pagination import Page,paginate
 
 from sqlalchemy.orm import Session
@@ -108,21 +108,31 @@ def update_user(
 
 # Get all users - Working
 page = Page.with_custom_options(
-    size=Field(100,ge=1,le=100),
-
+    size=Field(100, ge=1, le=100),
 )
 @user_router.get("/{role}/all", response_model=page[ShowUser])
 def get_all_users(
     role: str,
+    query: str = Query(None, description="Filtering by name"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     if str(current_user.role) in ["Role.admin", "Role.userManager"]:
-        users = db.query(User).filter(User.role == role).all()
+        users_query = db.query(User).filter(User.role == role)
+
+        if query:
+            users_query = users_query.filter(User.username.ilike(f"%{query}%"))
+
+        users = users_query.all()
         paginated_users = paginate(users)
-        json_compatabile_users = jsonable_encoder(paginated_users.items)
-        return JSONResponse(content=json_compatabile_users)
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"User with username {current_user.username} is not authorized to access this resource {current_user.role}")
+        json_compatible_users = jsonable_encoder(paginated_users.items)
+        return JSONResponse(content=json_compatible_users)
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=f"User with username {current_user.username} is not authorized to access this resource {current_user.role}"
+    )
+
 
 #  Check calories - Working
 @user_router.get("/target_calories/{username}", response_model=str)

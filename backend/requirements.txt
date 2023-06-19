@@ -28,4 +28,7 @@ fastapi-pagination
 pytest
 httpx
 
+# for Soting
+fastapi-utils
+```
 
