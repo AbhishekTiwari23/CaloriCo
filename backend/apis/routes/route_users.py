@@ -68,23 +68,42 @@ def update_user(
     email: str,
     user: UserCreate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)):
+    db: Session = Depends(get_db)
+):
     existing_user = get_user_by_email(email, db)
     if not existing_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with email {email} not found")
-    if str(current_user.role) in ["Role.admin", "Role.userManager"] or (current_user.email == email):
-        # Update the user's attributes
-        existing_user.first_name = user.first_name
-        existing_user.last_name = user.last_name
-        existing_user.username = user.username
-        existing_user.email = user.email
-        existing_user.role = user.role
-        existing_user.expected_calories = user.expected_calories
 
+    if str(current_user.role) == "Role.user" and current_user.email == email:
+        if (
+            existing_user.first_name != user.first_name
+            or existing_user.last_name != user.last_name
+            or existing_user.username != user.username
+            or existing_user.email != user.email
+            or existing_user.role != user.role
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"User with username {current_user.username} is authorized to change their expected calories only"
+            )
+        existing_user.expected_calories = user.expected_calories
+    else:
+        if str(current_user.role) in ["Role.admin", "Role.userManager"] or current_user.email == email:
+            check_user = db.query(User).filter((User.email == user.email) | (User.username == user.username)).first()
+            if check_user and check_user != existing_user:
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"User with email {user.email} or username {user.username} already exists Please use another")
+
+            existing_user.first_name = user.first_name
+            existing_user.last_name = user.last_name
+            existing_user.username = user.username
+            existing_user.email = user.email
+            existing_user.role = user.role
+            existing_user.expected_calories = user.expected_calories
         db.commit()
         db.refresh(existing_user)
         json_compatabile_user = jsonable_encoder(existing_user)
         return JSONResponse(content=json_compatabile_user)
+
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"User with username {current_user.username} is not authorized to access this resource {current_user.role}")
 
 # Get all users - Working
