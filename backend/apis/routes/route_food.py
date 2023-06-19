@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status,Query
 from sqlalchemy.orm import Session
 from core.security import get_current_user
 from database.models.food import Food
@@ -33,26 +33,32 @@ def create_food(
         return JSONResponse(content=json_compatabile_food)
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to create this food")
 
-# get all food - Working
 page = Page.with_custom_options(
-    size=Field(100,ge=1,le=100),
-
+    size=Field(100, ge=1, le=100),
 )
+
 @food_router.get("/{userName}/all", response_model=page[ShowFood])
 def get_all_food(
     user_name: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-    ):
-    existing_user =get_user_by_username(user_name, db)
+    query: str = Query(None, description="Filtering by Food name"),
+    current_user: User = Depends(get_current_user),
+):
+    existing_user = get_user_by_username(user_name, db)
     if not existing_user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User not found")
-    if existing_user.id == current_user.id or str(current_user.role) in ["Role.admin", "Role.userManager"] :
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-        query = db.query(Food).filter(Food.owner_id == existing_user.id).all()
-        json_compatabile_query = jsonable_encoder(paginate(query))
+    if existing_user.id == current_user.id or str(current_user.role) in ["Role.admin", "Role.userManager"]:
+        food_query = db.query(Food).filter(Food.owner_id == existing_user.id)
+        if query:
+            food_query = food_query.filter(Food.name.ilike(f"%{query}%"))
+
+        query_result = food_query.all()
+        json_compatabile_query = jsonable_encoder(paginate(query_result))
         return JSONResponse(content=json_compatabile_query)
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"User not authorized to update this food")
+
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User not authorized to update this food")
+
 
 # delete food - Working
 @food_router.delete("/delete/{food_id}", response_model=dict)
