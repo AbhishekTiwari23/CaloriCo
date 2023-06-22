@@ -4,6 +4,7 @@ from database.models.users import User
 from schemas.users import UserCreate
 from fastapi import HTTPException, status
 from core.hashing import Hash
+from core.password import PasswordStrength
 from database.models.food import Food
 
 # Create a new user - Working
@@ -12,6 +13,11 @@ def create_new_user(user: UserCreate, db: Session):
     existing_user = db.query(User).filter((User.email == user.email)|(User.username == user.username)).first()
     if existing_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"User with email {user.email} or username {user.username} already exists")
+
+    # Check for password strength
+    if not PasswordStrength.is_strong(user.password):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Password is not strong enough, it must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character, please try again {user.username}")
+
     join_date = user.join_date or datetime.now()
     expected_calories = user.expected_calories or 2200
 
