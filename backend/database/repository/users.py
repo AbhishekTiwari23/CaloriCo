@@ -22,10 +22,10 @@ def create_new_user(user: UserCreate, db: Session):
     expected_calories = user.expected_calories or 2200
 
     new_user = User(
-        first_name=user.first_name,
-        last_name=user.last_name,
-        username=user.username,
-        email=user.email,
+        first_name=user.first_name.capitalize(),
+        last_name=user.last_name.capitalize(),
+        username=user.username.capitalize(),
+        email=user.email.capitalize(),
         password = Hash.bcrypt(user.password),
         join_date=join_date,
         role=user.role.capitalize(),
