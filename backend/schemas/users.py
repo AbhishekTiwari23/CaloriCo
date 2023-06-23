@@ -3,9 +3,9 @@ from datetime import date
 from enum import Enum
 
 class Role(str, Enum):
-    user = "user"
-    userManager = "userManager"
-    admin = "admin"
+    user = "USER"
+    userManager = "USERMANAGER"
+    admin = "ADMIN"
 
     class Config:
         orm_mode = True

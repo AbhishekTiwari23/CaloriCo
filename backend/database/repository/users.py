@@ -28,7 +28,7 @@ def create_new_user(user: UserCreate, db: Session):
         email=user.email,
         password = Hash.bcrypt(user.password),
         join_date=join_date,
-        role=user.role,
+        role=user.role.capitalize(),
         expected_calories=expected_calories,
     )
 
