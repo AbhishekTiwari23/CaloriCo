@@ -11,6 +11,15 @@ def create_new_food(user:User,food: FoodCreate, db: Session):
 
     add_date = food.date or datetime.utcnow().date()
     add_calories = food.calories
+
+    if food.name:
+        api_response = get_calories(food.name, food.quantity)
+        data = json.loads(api_response)
+        if data['items'] == []:
+            raise HTTPException(status_code=403,detail=f"Invalid food name,")
+        add_calories = data['items'][0]['calories']
+
+
     if not food.calories:
         try:
             api_response = get_calories(food.name, food.quantity)
@@ -20,8 +29,11 @@ def create_new_food(user:User,food: FoodCreate, db: Session):
             raise HTTPException(status_code=403,detail=f"Invalid food name,")
     if(food.quantity <=0 ):
         raise HTTPException(status_code=403,detail="Quantity must be a positive integer")
+
+
+
     new_food = Food(
-        name=food.name,
+        name=food.name.capitalize(),
         date=add_date,
         time = food.time,
         quantity=food.quantity or 1,
