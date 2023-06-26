@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from database.models.food import Food
 from database.models.users import User
 from schemas.food import FoodCreate
-from datetime import datetime
+from datetime import datetime,date
 from core.calories import get_calories
 import json
 from fastapi import HTTPException, status
@@ -33,20 +33,29 @@ def create_new_food(user:User,food: FoodCreate, db: Session):
         raise HTTPException(status_code=403,detail="Quantity must be a positive integer")
 
 
+    food_exist = db.query(Food).filter(Food.name == food.name.capitalize(), Food.date == date.today(), Food.owner_id == user.id).first()
 
-    new_food = Food(
-        name=food.name.capitalize(),
-        date=add_date,
-        time = food.time,
-        quantity=food.quantity or 1,
-        calories=add_calories,
-        owner_id=user.id
-    )
-
-    db.add(new_food)
-    db.commit()
-    db.refresh(new_food)
-    return new_food
+    if food_exist:
+        food_exist.quantity += food.quantity
+        api_response = get_calories(food.name, food.quantity)
+        data = json.loads(api_response)
+        food_exist.calories += data['items'][0]['calories']
+        db.commit()
+        db.refresh(food_exist)
+        return food_exist
+    else:
+        new_food = Food(
+            name=food.name.capitalize(),
+            date=add_date,
+            time = food.time,
+            quantity=food.quantity or 1,
+            calories=add_calories,
+            owner_id=user.id
+        )
+        db.add(new_food)
+        db.commit()
+        db.refresh(new_food)
+        return new_food
 
 
 def get_food_list(db: Session, user: User):
