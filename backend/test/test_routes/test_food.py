@@ -8,7 +8,7 @@ def test_create_new_food(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "admin",
         "expected_calories": 2000
@@ -16,7 +16,7 @@ def test_create_new_food(client):
 
     create_user_response = client.post("/auth/SighUp", json=user_data)
     assert create_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
 
     food_data = {
@@ -51,7 +51,7 @@ def test_create_new_food_not_calory(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "admin",
         "expected_calories": 2000
@@ -59,7 +59,7 @@ def test_create_new_food_not_calory(client):
 
     create_user_response = client.post("/auth/SighUp", json=user_data)
     assert create_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
 
     food_data = {
@@ -99,7 +99,7 @@ def test_delete_food_pos(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "admin",
         "expected_calories": 2000
@@ -107,7 +107,7 @@ def test_delete_food_pos(client):
 
     create_user_response = client.post("/auth/SighUp", json=user_data)
     assert create_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
 
     food_data = {
@@ -142,7 +142,7 @@ def test_update_food_pos(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "admin",
         "expected_calories": 2000
@@ -150,7 +150,7 @@ def test_update_food_pos(client):
 
     create_user_response = client.post("/auth/SighUp", json=user_data)
     assert create_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
 
     food_data = {
@@ -198,7 +198,7 @@ def test_get_all_food_entries_pos(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "admin",
         "expected_calories": 2000
@@ -206,7 +206,7 @@ def test_get_all_food_entries_pos(client):
 
     create_user_response = client.post("/auth/SighUp", json=user_data)
     assert create_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
     access_token = auth_user_response.json()["access_token"]
 

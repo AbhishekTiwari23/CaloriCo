@@ -9,14 +9,14 @@ def test_get_user_by_username(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "user",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
 
     # Act
     response = client.get("/users/username/testuser?auth_token=" + auth_user_response.json()["access_token"])
@@ -34,7 +34,7 @@ def test_get_user_by_username_with_incorrect_credentiasls(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "user",
         "expected_calories": 2000
@@ -57,14 +57,14 @@ def test_get_user_by_email(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "user",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
 
     # Act
     response = client.get("/usersEmail/testuser@nofoobar.com?auth_token=" + auth_user_response.json()["access_token"])
@@ -82,14 +82,14 @@ def test_get_user_by_email_incorrect(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "user",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
 
     # Act
     response = client.get("/usersEmail/testuser@nobar.com?auth_token=" + auth_user_response.json()["access_token"])
@@ -105,14 +105,14 @@ def test_delete_user(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "user",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
 
     response = client.delete("/usersEmail/testuser@nofoobar.com?auth_token=" + auth_user_response.json()["access_token"])
 
@@ -127,14 +127,14 @@ def test_delete_user_with_invalid_token(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "user",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
 
     response = client.delete("/usersEmail/testur@nofoobar.com?auth_token=" + auth_user_response.json()["access_token"])
 
@@ -149,7 +149,7 @@ def test_update_user_by_email_invalid(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "user",
         "expected_calories": 2000
@@ -157,7 +157,7 @@ def test_update_user_by_email_invalid(client):
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
     assert crate_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
     access_token = auth_user_response.json()["access_token"]
 
@@ -166,7 +166,7 @@ def test_update_user_by_email_invalid(client):
         "last_name": "Updated Doe",
         "username": "updated_testuser",
         "email": "updated_testuser@nofoobar.com",
-        "password": "updated_testing",
+        "password": "updatedTesting@123",
         "join_date": "2021-01-01",
         "role": "admin",
         "expected_calories": 2500
@@ -190,7 +190,7 @@ def test_update_user_by_email(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "user",
         "expected_calories": 2000
@@ -198,7 +198,7 @@ def test_update_user_by_email(client):
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
     assert crate_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
     access_token = auth_user_response.json()["access_token"]
 
@@ -207,7 +207,7 @@ def test_update_user_by_email(client):
         "last_name": "Updated Doe",
         "username": "updated_testuser",
         "email": "updated_testuser@nofoobar.com",
-        "password": "updated_testing",
+        "password": "updated_Testing@123",
         "join_date": "2021-01-01",
         "role": "admin",
         "expected_calories": 2500
