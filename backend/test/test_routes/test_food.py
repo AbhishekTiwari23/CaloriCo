@@ -10,13 +10,13 @@ def test_create_new_food(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "admin",
+        "role": "ADMIN",
         "expected_calories": 2000
     }
 
     create_user_response = client.post("/auth/SighUp", json=user_data)
     assert create_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
 
     food_data = {
@@ -37,7 +37,7 @@ def test_create_new_food(client):
 
     # Assert
     assert response.status_code == 200
-    assert response.json()["name"] == "apple"
+    assert response.json()["name"] == "APPLE"
     assert response.json()["date"] == "2023-06-18"
     assert response.json()["time"] == "1900-01-01 07:55:13"
     assert response.json()["quantity"] == 1
@@ -53,13 +53,13 @@ def test_create_new_food_not_calory(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "admin",
+        "role": "ADMIN",
         "expected_calories": 2000
     }
 
     create_user_response = client.post("/auth/SighUp", json=user_data)
     assert create_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
 
     food_data = {
@@ -85,7 +85,7 @@ def test_create_new_food_not_calory(client):
 
     # Assert
     assert response.status_code == 200
-    assert response.json()["name"] == "apple"
+    assert response.json()["name"] == "APPLE"
     assert response.json()["date"] == "2023-06-18"
     assert response.json()["time"] == "1900-01-01 07:55:13"
     assert response.json()["quantity"] == 1
@@ -101,13 +101,13 @@ def test_delete_food_pos(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "admin",
+        "role": "ADMIN",
         "expected_calories": 2000
     }
 
     create_user_response = client.post("/auth/SighUp", json=user_data)
     assert create_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
 
     food_data = {
@@ -144,13 +144,13 @@ def test_update_food_pos(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "admin",
+        "role": "ADMIN",
         "expected_calories": 2000
     }
 
     create_user_response = client.post("/auth/SighUp", json=user_data)
     assert create_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
 
     food_data = {
@@ -184,7 +184,7 @@ def test_update_food_pos(client):
 
     # Assert
     assert response.status_code == 200
-    assert response.json()["name"] == "banana"
+    assert response.json()["name"] == "BANANA"
     assert response.json()["date"] == "2023-06-18"
     assert response.json()["time"] == "1900-01-01 07:55:13"
     assert response.json()["quantity"] == 2
@@ -200,13 +200,13 @@ def test_get_all_food_entries_pos(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "admin",
+        "role": "ADMIN",
         "expected_calories": 2000
     }
 
     create_user_response = client.post("/auth/SighUp", json=user_data)
     assert create_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
     access_token = auth_user_response.json()["access_token"]
 

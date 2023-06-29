@@ -93,11 +93,11 @@ def update_user(
             if check_user and check_user != existing_user:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"User with email {user.email} or username {user.username} already exists Please use another")
 
-            existing_user.first_name = user.first_name
-            existing_user.last_name = user.last_name
-            existing_user.username = user.username
-            existing_user.email = user.email
-            existing_user.role = user.role
+            existing_user.first_name = user.first_name.upper()
+            existing_user.last_name = user.last_name.upper()
+            existing_user.username = user.username.upper()
+            existing_user.email = user.email.upper()
+            existing_user.role = user.role.upper()
             existing_user.expected_calories = user.expected_calories
         db.commit()
         db.refresh(existing_user)

@@ -11,19 +11,23 @@ def test_get_user_by_username(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    assert crate_user_response.status_code == 200
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
+    assert auth_user_response.status_code == 200
+    auth_token = auth_user_response.json()["access_token"]
+
 
     # Act
-    response = client.get("/users/username/testuser?auth_token=" + auth_user_response.json()["access_token"])
+    response = client.get("/users/username/TESTUSER?auth_token=" + auth_token)
 
     assert response.status_code == 200
-    assert response.json()["username"] == "testuser"
-    assert response.json()["email"] == "testuser@nofoobar.com"
+    assert response.json()["username"] == "TESTUSER"
+    assert response.json()["email"] == "TESTUSER@NOFOOBAR.COM"
 
 # test to get user by username with invalid token
 def test_get_user_by_username_with_incorrect_credentiasls(client):
@@ -36,15 +40,15 @@ def test_get_user_by_username_with_incorrect_credentiasls(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
+    assert crate_user_response.status_code == 200
 
     # Act
-    response = client.get("/users/username/testuser?auth_token=" +"" + "invalid")
-
+    response = client.get("/users/username/TESTUSER?auth_token=" +"" + "invalid")
     assert response.status_code == 401
     assert response.json()["detail"] == "Invalid authentication credentials"
 
@@ -59,19 +63,21 @@ def test_get_user_by_email(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    assert crate_user_response.status_code == 200
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
+    assert auth_user_response.status_code == 200
 
     # Act
-    response = client.get("/usersEmail/testuser@nofoobar.com?auth_token=" + auth_user_response.json()["access_token"])
+    response = client.get("/usersEmail/TESTUSER@NOFOOBAR.COM?auth_token=" + auth_user_response.json()["access_token"])
 
     assert response.status_code == 200
-    assert response.json()["username"] == "testuser"
-    assert response.json()["email"] == "testuser@nofoobar.com"
+    assert response.json()["username"] == "TESTUSER"
+    assert response.json()["email"] == "TESTUSER@NOFOOBAR.COM"
 
 # test to get user by email
 def test_get_user_by_email_incorrect(client):
@@ -84,12 +90,12 @@ def test_get_user_by_email_incorrect(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
 
     # Act
     response = client.get("/usersEmail/testuser@nobar.com?auth_token=" + auth_user_response.json()["access_token"])
@@ -107,14 +113,14 @@ def test_delete_user(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
 
-    response = client.delete("/usersEmail/testuser@nofoobar.com?auth_token=" + auth_user_response.json()["access_token"])
+    response = client.delete("/usersEmail/TESTUSER@NOFOOBAR.COM?auth_token=" + auth_user_response.json()["access_token"])
 
     assert response.status_code == 200
     assert response.json()["detail"] == "User deleted successfully"
@@ -129,12 +135,12 @@ def test_delete_user_with_invalid_token(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
 
     response = client.delete("/usersEmail/testur@nofoobar.com?auth_token=" + auth_user_response.json()["access_token"])
 
@@ -151,13 +157,13 @@ def test_update_user_by_email_invalid(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
     assert crate_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
     access_token = auth_user_response.json()["access_token"]
 
@@ -168,7 +174,7 @@ def test_update_user_by_email_invalid(client):
         "email": "updated_testuser@nofoobar.com",
         "password": "updatedTesting@123",
         "join_date": "2021-01-01",
-        "role": "admin",
+        "role": "ADMIN",
         "expected_calories": 2500
     }
     # Act
@@ -192,13 +198,13 @@ def test_update_user_by_email(client):
         "email": "testuser@nofoobar.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "ADMIN",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
     assert crate_user_response.status_code == 200
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "Testing@123"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
     assert auth_user_response.status_code == 200
     access_token = auth_user_response.json()["access_token"]
 
@@ -209,23 +215,23 @@ def test_update_user_by_email(client):
         "email": "updated_testuser@nofoobar.com",
         "password": "updated_Testing@123",
         "join_date": "2021-01-01",
-        "role": "admin",
+        "role": "ADMIN",
         "expected_calories": 2500
     }
     # Act
     response = client.put(
-        f"/users/update/testuser@nofoobar.com?auth_token={access_token}",
+        f"/users/update/TESTUSER@NOFOOBAR.COM?auth_token={access_token}",
         json=updated_user_data,
         headers={"Authorization": f"Bearer {access_token}"}
     )
 
     # Assert
     assert response.status_code == 200
-    assert response.json()["first_name"] == "Updated John"
-    assert response.json()["last_name"] == "Updated Doe"
-    assert response.json()["username"] == "updated_testuser"
-    assert response.json()["email"] == "updated_testuser@nofoobar.com"
-    assert response.json()["role"] == "admin"
+    assert response.json()["first_name"] == "UPDATED JOHN"
+    assert response.json()["last_name"] == "UPDATED DOE"
+    assert response.json()["username"] == "UPDATED_TESTUSER"
+    assert response.json()["email"] == "UPDATED_TESTUSER@NOFOOBAR.COM"
+    assert response.json()["role"] == "ADMIN"
     assert response.json()["expected_calories"] == 2500
 
 
@@ -239,9 +245,9 @@ def test_get_all_users(client):
         "last_name": "Doe1",
         "username": "testuser1",
         "email": "testuser@nofoobar1.com",
-        "password": "testing1",
+        "password": "Testing@1",
         "join_date": "2021-01-01",
-        "role": "admin",
+        "role": "ADMIN",
         "expected_calories": 2000
     }
     crate_user_response1 = client.post("/auth/SighUp", json=user_data1)
@@ -251,9 +257,9 @@ def test_get_all_users(client):
         "last_name": "Doe2",
         "username": "testuser2",
         "email": "testuser@nofoobar2.com",
-        "password": "testing2",
+        "password": "Testing@2",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
     }
     crate_user_response2 = client.post("/auth/SighUp", json=user_data2)
@@ -263,14 +269,14 @@ def test_get_all_users(client):
         "last_name": "Doe3",
         "username": "testuser3",
         "email": "testuser@nofoobar3.com",
-        "password": "testing3",
+        "password": "Testing@3",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
     }
     crate_user_response3 = client.post("/auth/SighUp", json=user_data3)
 
-    auth_user_response = client.post("/auth/token", data={"username": "testuser1", "password": "testing1"})
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER1", "password": "Testing@1"})
 
     # Act
     access_token = auth_user_response.json()["access_token"]
@@ -278,7 +284,7 @@ def test_get_all_users(client):
 
     # Assert
     assert response.status_code == 200
-    assert len(response.json()) == 2 # 2 users created
+    assert len(response.json()) == 2 # Because 2 users created above
 
 # test to get all users with invalid token
 def test_get_all_users_neg(client):
@@ -290,7 +296,7 @@ def test_get_all_users_neg(client):
         "email": "testuser@nofoobar1.com",
         "password": "testing1",
         "join_date": "2021-01-01",
-        "role": "admin",
+        "role": "ADMIN",
         "expected_calories": 2000
     }
     crate_user_response1 = client.post("/auth/SighUp", json=user_data1)
@@ -302,7 +308,7 @@ def test_get_all_users_neg(client):
         "email": "testuser@nofoobar2.com",
         "password": "testing2",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
     }
     crate_user_response2 = client.post("/auth/SighUp", json=user_data2)
@@ -314,7 +320,7 @@ def test_get_all_users_neg(client):
         "email": "testuser@nofoobar3.com",
         "password": "testing3",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
     }
     crate_user_response3 = client.post("/auth/SighUp", json=user_data3)
@@ -333,18 +339,20 @@ def test_check_calories(client):
         "last_name": "Doe",
         "username": "testuser",
         "email": "testuser@nofoobar.com",
-        "password": "testing",
+        "password": "Testing@123",
         "join_date": "2021-01-01",
-        "role": "user",
+        "role": "USER",
         "expected_calories": 2000
 
     }
     crate_user_response = client.post("/auth/SighUp", json=user_data)
-    auth_user_response = client.post("/auth/token", data={"username": "testuser", "password": "testing"})
+    assert crate_user_response.status_code == 200
+    auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
+    assert auth_user_response.status_code == 200
     access_token = auth_user_response.json()["access_token"]
 
     # Act
-    response = client.get(f"/users/target_calories/testuser?auth_token={access_token}")
+    response = client.get(f"/users/target_calories/TESTUSER?auth_token={access_token}")
     # Assert
     assert response.status_code == 200
     assert str(user_data["expected_calories"]) in response.json()["detail"]
