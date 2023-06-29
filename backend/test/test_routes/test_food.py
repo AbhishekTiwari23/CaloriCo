@@ -30,7 +30,7 @@ def test_create_new_food(client):
     # Act
     access_token = auth_user_response.json()["access_token"]
     response = client.post(
-        f"/food/testuser/new_food?auth_token={access_token}",
+        f"/food/TESTUSER/new_food?auth_token={access_token}",
         json=food_data,
         headers={"Authorization": f"Bearer {access_token}"}
     )
@@ -73,7 +73,7 @@ def test_create_new_food_not_calory(client):
     # Act
     access_token = auth_user_response.json()["access_token"]
     response = client.post(
-        f"/food/testuser/new_food?auth_token={access_token}",
+        f"/food/TESTUSER/new_food?auth_token={access_token}",
         json=food_data,
         headers={"Authorization": f"Bearer {access_token}"}
     )
@@ -119,7 +119,7 @@ def test_delete_food_pos(client):
     }
     access_token = auth_user_response.json()["access_token"]
     food_entry_response = client.post(
-        f"/food/testuser/new_food?auth_token={access_token}",
+        f"/food/TESTUSER/new_food?auth_token={access_token}",
         json=food_data,
         headers={"Authorization": f"Bearer {access_token}"}
     )
@@ -162,7 +162,7 @@ def test_update_food_pos(client):
     }
     access_token = auth_user_response.json()["access_token"]
     food_entry_response = client.post(
-        f"/food/testuser/new_food?auth_token={access_token}",
+        f"/food/TESTUSER/new_food?auth_token={access_token}",
         json=food_data,
         headers={"Authorization": f"Bearer {access_token}"}
     )
@@ -218,7 +218,7 @@ def test_get_all_food_entries_pos(client):
         "calories": "96"
     }
     food_entry_response1 = client.post(
-        f"/food/testuser/new_food?auth_token={access_token}",
+        f"/food/TESTUSER/new_food?auth_token={access_token}",
         json=food_data1,
         headers={"Authorization": f"Bearer {access_token}"}
     )
@@ -230,7 +230,7 @@ def test_get_all_food_entries_pos(client):
     "calories": "96"
 }
     food_entry_response2 = client.post(
-        f"/food/testuser/new_food?auth_token={access_token}",
+        f"/food/TESTUSER/new_food?auth_token={access_token}",
         json=food_data2,
         headers={"Authorization": f"Bearer {access_token}"}
 )
@@ -243,13 +243,13 @@ def test_get_all_food_entries_pos(client):
         "calories": "96"
     }
     food_entry_response3 = client.post(
-        f"/food/testuser/new_food?auth_token={access_token}",
+        f"/food/TESTUSER/new_food?auth_token={access_token}",
         json=food_data3,
         headers={"Authorization": f"Bearer {access_token}"}
     )
 
     # Act
-    response = client.get("/food/{userName}/all?user_name=testuser&auth_token="+access_token)
+    response = client.get("/food/{userName}/all?user_name=TESTUSER&auth_token="+access_token)
 
     # Assert
     assert response.status_code == 200

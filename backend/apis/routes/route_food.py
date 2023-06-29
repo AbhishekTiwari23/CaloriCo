@@ -80,7 +80,7 @@ def update_food(
     if not existing_food:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Food with id {food_id} not found")
     if existing_food.owner_id == user.id or str(user.role) in ["Role.admin", "Role.userManager"] :
-        existing_food.name = food.name
+        existing_food.name = food.name.upper()
         existing_food.quantity = food.quantity
         existing_food.calories = food.calories
         db.commit()
