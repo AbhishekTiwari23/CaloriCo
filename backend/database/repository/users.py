@@ -10,25 +10,25 @@ from database.models.food import Food
 # Create a new user - Working
 def create_new_user(user: UserCreate, db: Session):
     # Check if the email already exists
-    existing_user = db.query(User).filter((User.email == user.email)|(User.username == user.username)).first()
+    existing_user = db.query(User).filter((User.email == user.email.upper())|(User.username == user.username.upper())).first()
     if existing_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"User with email {user.email} or username {user.username} already exists")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"User with email {user.email.upper()} or username {user.username.upper()} already exists")
 
     # Check for password strength
     if not PasswordStrength.is_strong(user.password):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Password is not strong enough, it must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character, please try again {user.username}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Password is not strong enough, it must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character, please try again {user.username.upper()}")
 
     join_date = user.join_date or datetime.now()
     expected_calories = user.expected_calories or 2200
 
     new_user = User(
-        first_name=user.first_name.capitalize(),
-        last_name=user.last_name.capitalize(),
-        username=user.username.capitalize(),
-        email=user.email.capitalize(),
+        first_name=user.first_name.upper(),
+        last_name=user.last_name.upper(),
+        username=user.username.upper(),
+        email=user.email.upper(),
         password = Hash.bcrypt(user.password),
         join_date=join_date,
-        role=user.role.capitalize(),
+        role=user.role.upper(),
         expected_calories=expected_calories,
     )
 

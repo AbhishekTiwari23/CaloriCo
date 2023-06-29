@@ -33,7 +33,7 @@ def create_new_food(user:User,food: FoodCreate, db: Session):
         raise HTTPException(status_code=403,detail="Quantity must be a positive integer")
 
 
-    food_exist = db.query(Food).filter(Food.name == food.name.capitalize(), Food.date == date.today(), Food.owner_id == user.id).first()
+    food_exist = db.query(Food).filter(Food.name == food.name.upper(), Food.date == date.today(), Food.owner_id == user.id).first()
 
     if food_exist:
         food_exist.quantity += food.quantity
@@ -45,7 +45,7 @@ def create_new_food(user:User,food: FoodCreate, db: Session):
         return food_exist
     else:
         new_food = Food(
-            name=food.name.capitalize(),
+            name=food.name.upper(),
             date=add_date,
             time = food.time,
             quantity=food.quantity or 1,

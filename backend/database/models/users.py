@@ -13,7 +13,7 @@ class User(Base):
     email = Column(String(100), unique=True, index=True, nullable=False)
     password = Column(String, nullable=False)
     join_date = Column(Date)
-    role = Column(Enum(Role), default="user")
+    role = Column(Enum(Role), default="USER")
     expected_calories = Column(Integer)
 
     food = relationship("Food", back_populates="owner")

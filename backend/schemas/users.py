@@ -15,10 +15,11 @@ class UserCreate(BaseModel):
     last_name: str = Field(example="Doe")
     username: str = Field(example="johndoe")
     email: EmailStr = Field(example="john@gmail.com")
-    password: str = Field(example="password")
+    password: str = Field(example="JohnDoe@123")
     join_date: date = Field(example=date.today())
-    role: Role = "user"
+    role: Role = "USER"
     expected_calories: int = Field(example=2000)
+
 
     class Config:
         orm_mode = True
