@@ -4,7 +4,7 @@ def test_create_user(client):
         "first_name": "John",
         "last_name": "Doe",
         "username": "testuser",
-        "email": "testuser@nofoobar.com",
+        "email": "testuser@gmail.com",
         "password": "JohnDoe@123",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -20,7 +20,7 @@ def test_create_user(client):
     assert response.json()["first_name"] == "JOHN"
     assert response.json()["last_name"] == "DOE"
     assert response.json()["username"] == "TESTUSER"
-    assert response.json()["email"] == "TESTUSER@NOFOOBAR.COM"
+    assert response.json()["email"] == "TESTUSER@GMAIL.COM"
     assert response.json()["password"] != "JohnDoe@123"
     assert response.json()["join_date"] == "2021-01-01"
     assert response.json()["role"] == "USER"

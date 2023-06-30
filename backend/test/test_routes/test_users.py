@@ -8,7 +8,7 @@ def test_get_user_by_username(client):
         "first_name": "John",
         "last_name": "Doe",
         "username": "testuser",
-        "email": "testuser@nofoobar.com",
+        "email": "testuser@gmail.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -27,7 +27,7 @@ def test_get_user_by_username(client):
 
     assert response.status_code == 200
     assert response.json()["username"] == "TESTUSER"
-    assert response.json()["email"] == "TESTUSER@NOFOOBAR.COM"
+    assert response.json()["email"] == "TESTUSER@GMAIL.COM"
 
 # test to get user by username with invalid token
 def test_get_user_by_username_with_incorrect_credentiasls(client):
@@ -37,7 +37,7 @@ def test_get_user_by_username_with_incorrect_credentiasls(client):
         "first_name": "John",
         "last_name": "Doe",
         "username": "testuser",
-        "email": "testuser@nofoobar.com",
+        "email": "testuser@gmail.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -60,7 +60,7 @@ def test_get_user_by_email(client):
         "first_name": "John",
         "last_name": "Doe",
         "username": "testuser",
-        "email": "testuser@nofoobar.com",
+        "email": "testuser@gmail.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -73,11 +73,11 @@ def test_get_user_by_email(client):
     assert auth_user_response.status_code == 200
 
     # Act
-    response = client.get("/usersEmail/TESTUSER@NOFOOBAR.COM?auth_token=" + auth_user_response.json()["access_token"])
+    response = client.get("/usersEmail/TESTUSER@GMAIL.COM?auth_token=" + auth_user_response.json()["access_token"])
 
     assert response.status_code == 200
     assert response.json()["username"] == "TESTUSER"
-    assert response.json()["email"] == "TESTUSER@NOFOOBAR.COM"
+    assert response.json()["email"] == "TESTUSER@GMAIL.COM"
 
 # test to get user by email
 def test_get_user_by_email_incorrect(client):
@@ -87,7 +87,7 @@ def test_get_user_by_email_incorrect(client):
         "first_name": "John",
         "last_name": "Doe",
         "username": "testuser",
-        "email": "testuser@nofoobar.com",
+        "email": "testuser@gmail.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -110,7 +110,7 @@ def test_delete_user(client):
         "first_name": "John",
         "last_name": "Doe",
         "username": "testuser",
-        "email": "testuser@nofoobar.com",
+        "email": "testuser@gmail.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -120,7 +120,7 @@ def test_delete_user(client):
     crate_user_response = client.post("/auth/SighUp", json=user_data)
     auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
 
-    response = client.delete("/usersEmail/TESTUSER@NOFOOBAR.COM?auth_token=" + auth_user_response.json()["access_token"])
+    response = client.delete("/usersEmail/TESTUSER@GMAIL.COM?auth_token=" + auth_user_response.json()["access_token"])
 
     assert response.status_code == 200
     assert response.json()["detail"] == "User deleted successfully"
@@ -132,7 +132,7 @@ def test_delete_user_with_invalid_token(client):
         "first_name": "John",
         "last_name": "Doe",
         "username": "testuser",
-        "email": "testuser@nofoobar.com",
+        "email": "testuser@gmail.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -142,10 +142,10 @@ def test_delete_user_with_invalid_token(client):
     crate_user_response = client.post("/auth/SighUp", json=user_data)
     auth_user_response = client.post("/auth/token", data={"username": "TESTUSER", "password": "Testing@123"})
 
-    response = client.delete("/usersEmail/testur@nofoobar.com?auth_token=" + auth_user_response.json()["access_token"])
+    response = client.delete("/usersEmail/testur@gmail.com?auth_token=" + auth_user_response.json()["access_token"])
 
     assert response.status_code == 404
-    assert response.json()["detail"] == "User with email testur@nofoobar.com not found"
+    assert response.json()["detail"] == "User with email testur@gmail.com not found"
 
 #  test to update a user by email with invalid email
 def test_update_user_by_email_invalid(client):
@@ -154,7 +154,7 @@ def test_update_user_by_email_invalid(client):
         "first_name": "John",
         "last_name": "Doe",
         "username": "testuser",
-        "email": "testuser@nofoobar.com",
+        "email": "testuser@gmail.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -171,7 +171,7 @@ def test_update_user_by_email_invalid(client):
         "first_name": "Updated John",
         "last_name": "Updated Doe",
         "username": "updated_testuser",
-        "email": "updated_testuser@nofoobar.com",
+        "email": "updated_testuser@gmail.com",
         "password": "updatedTesting@123",
         "join_date": "2021-01-01",
         "role": "ADMIN",
@@ -195,7 +195,7 @@ def test_update_user_by_email(client):
         "first_name": "John",
         "last_name": "Doe",
         "username": "testuser",
-        "email": "testuser@nofoobar.com",
+        "email": "testuser@gmail.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "ADMIN",
@@ -212,7 +212,7 @@ def test_update_user_by_email(client):
         "first_name": "Updated John",
         "last_name": "Updated Doe",
         "username": "updated_testuser",
-        "email": "updated_testuser@nofoobar.com",
+        "email": "updated_testuser@gmail.com",
         "password": "updated_Testing@123",
         "join_date": "2021-01-01",
         "role": "ADMIN",
@@ -220,7 +220,7 @@ def test_update_user_by_email(client):
     }
     # Act
     response = client.put(
-        f"/users/update/TESTUSER@NOFOOBAR.COM?auth_token={access_token}",
+        f"/users/update/TESTUSER@GMAIL.COM?auth_token={access_token}",
         json=updated_user_data,
         headers={"Authorization": f"Bearer {access_token}"}
     )
@@ -230,7 +230,7 @@ def test_update_user_by_email(client):
     assert response.json()["first_name"] == "UPDATED JOHN"
     assert response.json()["last_name"] == "UPDATED DOE"
     assert response.json()["username"] == "UPDATED_TESTUSER"
-    assert response.json()["email"] == "UPDATED_TESTUSER@NOFOOBAR.COM"
+    assert response.json()["email"] == "UPDATED_TESTUSER@GMAIL.COM"
     assert response.json()["role"] == "ADMIN"
     assert response.json()["expected_calories"] == 2500
 
@@ -244,7 +244,7 @@ def test_get_all_users(client):
         "first_name": "John1",
         "last_name": "Doe1",
         "username": "testuser1",
-        "email": "testuser@nofoobar1.com",
+        "email": "testuser1@gmail.com",
         "password": "Testing@1",
         "join_date": "2021-01-01",
         "role": "ADMIN",
@@ -256,7 +256,7 @@ def test_get_all_users(client):
         "first_name": "John2",
         "last_name": "Doe2",
         "username": "testuser2",
-        "email": "testuser@nofoobar2.com",
+        "email": "testuser2@gmail.com",
         "password": "Testing@2",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -268,7 +268,7 @@ def test_get_all_users(client):
         "first_name": "John3",
         "last_name": "Doe3",
         "username": "testuser3",
-        "email": "testuser@nofoobar3.com",
+        "email": "testuser3@gmail.com",
         "password": "Testing@3",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -293,7 +293,7 @@ def test_get_all_users_neg(client):
         "first_name": "John1",
         "last_name": "Doe1",
         "username": "testuser1",
-        "email": "testuser@nofoobar1.com",
+        "email": "testuser@gmail1.com",
         "password": "testing1",
         "join_date": "2021-01-01",
         "role": "ADMIN",
@@ -305,7 +305,7 @@ def test_get_all_users_neg(client):
         "first_name": "John2",
         "last_name": "Doe2",
         "username": "testuser2",
-        "email": "testuser@nofoobar2.com",
+        "email": "testuser@gmail2.com",
         "password": "testing2",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -317,7 +317,7 @@ def test_get_all_users_neg(client):
         "first_name": "John3",
         "last_name": "Doe3",
         "username": "testuser3",
-        "email": "testuser@nofoobar3.com",
+        "email": "testuser@gmail3.com",
         "password": "testing3",
         "join_date": "2021-01-01",
         "role": "USER",
@@ -338,7 +338,7 @@ def test_check_calories(client):
         "first_name": "John",
         "last_name": "Doe",
         "username": "testuser",
-        "email": "testuser@nofoobar.com",
+        "email": "testuser@gmail.com",
         "password": "Testing@123",
         "join_date": "2021-01-01",
         "role": "USER",

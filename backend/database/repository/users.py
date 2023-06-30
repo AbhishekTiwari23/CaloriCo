@@ -5,6 +5,7 @@ from schemas.users import UserCreate
 from fastapi import HTTPException, status
 from core.hashing import Hash
 from core.password import PasswordStrength
+from core.emailValidation import validateEmail
 from database.models.food import Food
 
 # Create a new user - Working
@@ -20,6 +21,11 @@ def create_new_user(user: UserCreate, db: Session):
 
     join_date = user.join_date or datetime.now()
     expected_calories = user.expected_calories or 2200
+
+    # Check for valid email address
+    if not validateEmail(user.email):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Invalid email address, please try again {user.email.upper()} {validateEmail(user.email)}")
+
 
     new_user = User(
         first_name=user.first_name.upper(),
