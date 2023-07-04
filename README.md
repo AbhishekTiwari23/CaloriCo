@@ -28,7 +28,7 @@ __👥 Community Support__
 - Gitter Channel [Link](https://matrix.to/#/#CaloriCo:gitter.im)
 
 ## Contributing
-Contributions are always welcome! If you would like to contribute to the project, please follow [Contributing.md]()
+Contributions are always welcome! If you would like to contribute to the project, please follow [Contributing.md](https://github.com/AbhishekTiwari23/CaloriCo/blob/main/contributing.md)
 
 ## Contact
 - If you have any questions about CaloriCo or would like to reach out to the developer, please use the contact form provided in the application or email me directly at __tiwari.abhishektiwari23@gmail.com__.
