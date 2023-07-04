@@ -19,13 +19,12 @@ def create_new_user(user: UserCreate, db: Session):
     if not PasswordStrength.is_strong(user.password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Password is not strong enough, it must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character, please try again {user.username.upper()}")
 
+    # Check if the email is valid
+    if not validateEmail(user.email):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Email is not valid, please try again {user.username.upper()}")
+
     join_date = user.join_date or datetime.now()
     expected_calories = user.expected_calories or 2200
-
-    # Check for valid email address
-    if not validateEmail(user.email):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Invalid email address, please try again {user.email.upper()} {validateEmail(user.email)}")
-
 
     new_user = User(
         first_name=user.first_name.upper(),
@@ -45,17 +44,17 @@ def create_new_user(user: UserCreate, db: Session):
 
 # Get a user by email - Working
 def get_user_by_email(email: str, db: Session):
-    user = db.query(User).filter(User.email == email).first()
+    user = db.query(User).filter(User.email == email.upper()).first()
     return user
 
-# Get a user by username
+# Get a user by username - Working
 def get_user_by_username(username: str, db: Session):
-    user = db.query(User).filter(User.username == username).first()
+    user = db.query(User).filter(User.username == username.upper()).first()
     return user
 
 #  Delete a user by email
 def delete_user_by_email(email: str, db: Session):
-    current_user = db.query(User).filter(User.email == email)
+    current_user = db.query(User).filter(User.email == email.upper())
     if not current_user.first():
         return 0
     current_user.delete(synchronize_session=False)

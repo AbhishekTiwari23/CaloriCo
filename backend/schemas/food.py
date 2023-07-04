@@ -6,7 +6,7 @@ add_time = datetime.utcnow().time().strftime("%H:%M:%S")
 
 class FoodCreate(BaseModel):
     name: str = Field(example="apple", description="Name of the food")
-    date: date
+    date: str = Field(example=date.today(), description="Date of the food")
     time : str = Field(example=add_time, description="Time of the food")
     quantity: int = Field(example=1, description="Quantity of the food")
     calories: Optional[str] = Field(example="95", description="Calories of the food")

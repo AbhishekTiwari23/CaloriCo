@@ -127,11 +127,11 @@ def test_delete_food_pos(client):
     food_id = food_entry_response.json()["id"]
 
     # Act
-    response = client.delete(f"/food/delete/{food_id}?&auth_token={access_token}")
+    response = client.delete(f"/food/delete/testuser/{food_id}?&auth_token={access_token}")
 
     # Assert
     assert response.status_code == 200
-    assert response.json()["message"] == "Food deleted successfully"
+    assert response.json()["message"] == f"Food deleted successfully for TESTUSER and id {food_id}"
 
 
 #  test to update the food pos
@@ -249,7 +249,7 @@ def test_get_all_food_entries_pos(client):
     )
 
     # Act
-    response = client.get("/food/{userName}/all?user_name=TESTUSER&auth_token="+access_token)
+    response = client.get("/food/testuser/all?&auth_token="+access_token)
 
     # Assert
     assert response.status_code == 200

@@ -41,7 +41,7 @@ def get_user_email(
     user = get_user_by_email(email, db)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with email {email} not found")
-    if str(current_user.role)  in ["Role.admin", "Role.userManager"] or (current_user.email == email):
+    if str(current_user.role)  in ["Role.admin", "Role.userManager"] or (current_user.email == email.upper()):
         json_compatabile_user = jsonable_encoder(user)
         return JSONResponse(content=json_compatabile_user)
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"User with username {current_user.username} is not authorized to access this resource {current_user.role}")
@@ -56,7 +56,7 @@ def delete_user_email(
     user = get_user_by_email(email, db)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with email {email} not found")
-    if str(current_user.role) in ["Role.admin", "Role.userManager"] or (current_user.email == email):
+    if str(current_user.role) in ["Role.admin", "Role.userManager"] or (current_user.email == email.upper()):
         delete_user_by_email(email, db)
         json_compatabile_message = jsonable_encoder({"detail": "User deleted successfully"})
         return JSONResponse(content=json_compatabile_message)
@@ -74,12 +74,12 @@ def update_user(
     if not existing_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with email {email} not found")
 
-    if str(current_user.role) == "Role.user" and current_user.email == email:
+    if str(current_user.role) == "Role.user" and current_user.email == email.upper():
         if (
-            existing_user.first_name != user.first_name
-            or existing_user.last_name != user.last_name
-            or existing_user.username != user.username
-            or existing_user.email != user.email
+            existing_user.first_name != user.first_name.upper()
+            or existing_user.last_name != user.last_name.upper()
+            or existing_user.username != user.username.upper()
+            or existing_user.email != user.email.upper()
             or existing_user.role != user.role
         ):
             raise HTTPException(
@@ -88,10 +88,10 @@ def update_user(
             )
         existing_user.expected_calories = user.expected_calories
     else:
-        if str(current_user.role) in ["Role.admin", "Role.userManager"] or current_user.email == email:
-            check_user = db.query(User).filter((User.email == user.email) | (User.username == user.username)).first()
+        if str(current_user.role) in ["Role.admin", "Role.userManager"] or current_user.email == email.upper():
+            check_user = db.query(User).filter((User.email == user.email.upper()) | (User.username == user.username.upper())).first()
             if check_user and check_user != existing_user:
-                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"User with email {user.email} or username {user.username} already exists Please use another")
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"User with email {user.email.upper()} or username {user.username} already exists Please use another")
 
             existing_user.first_name = user.first_name.upper()
             existing_user.last_name = user.last_name.upper()
@@ -117,6 +117,11 @@ def get_all_users(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    if role == 'Role.userManager' and str(current_user.role) == "Role.userManager":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"User with username {current_user.username} is not authorized to access this resource {current_user.role}"
+        )
     if str(current_user.role) in ["Role.admin", "Role.userManager"]:
         users_query = db.query(User).filter(User.role == role)
 
@@ -144,7 +149,7 @@ def check_calories(
     user = get_user_by_username(username, db)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with username {username} not found")
-    if str(current_user.role) in ["Role.admin", "Role.userManager"] or (current_user.username == username):
+    if str(current_user.role) in ["Role.admin", "Role.userManager"] or (current_user.username == username.upper()):
         total_calories = check_calories_goal(user, db)
         message = ""
         if total_calories > user.expected_calories:
